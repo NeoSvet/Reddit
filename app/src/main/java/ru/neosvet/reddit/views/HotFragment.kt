@@ -3,12 +3,19 @@ package ru.neosvet.reddit.views
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import ru.neosvet.reddit.R
 import ru.neosvet.reddit.databinding.FragmentHotBinding
 import ru.neosvet.reddit.list.Post
 import ru.neosvet.reddit.list.PostsAdapter
+import ru.neosvet.reddit.viewmodel.HotState
+import ru.neosvet.reddit.viewmodel.HotViewModel
 
 class HotFragment : Fragment() {
+    private val model: HotViewModel by lazy {
+        ViewModelProvider(this).get(HotViewModel::class.java)
+    }
     private var binding: FragmentHotBinding? = null
 
     override fun onCreateView(
@@ -26,7 +33,8 @@ class HotFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initList()
+        model.loadHotPosts()
+        model.state.observe(requireActivity(), this::changeModelState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -37,25 +45,29 @@ class HotFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        //TODO refresh
+        model.loadHotPosts()
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initList() = binding?.run {
-        val adapter = PostsAdapter(
-            listOf(
-                Post("text1", 1, 2),
-                Post("text2", 1, 2),
-                Post("text3", 1, 2),
-                Post("text4", 1, 2),
-                Post("text5", 1, 2),
-                Post("text6", 1, 2),
-                Post("text7", 1, 2),
-                Post("text8", 1, 2),
-                Post("text9", 1, 2),
-                Post("text10", 1, 2)
-            )
-        )
+    private fun changeModelState(state: HotState) {
+        when (state) {
+            is HotState.Success -> initList(state.posts)
+            is HotState.Error -> showError(state.throwable)
+        }
+    }
+
+    private fun initList(posts: List<Post>) = binding?.run {
+        val adapter = PostsAdapter(posts)
         rvPosts.adapter = adapter
+    }
+
+    private fun showError(throwable: Throwable) {
+        binding?.run {
+            val msg = String.format(
+                getString(R.string.error_format),
+                throwable.localizedMessage
+            )
+            Snackbar.make(rvPosts, msg, Snackbar.LENGTH_LONG)
+        }
     }
 }
