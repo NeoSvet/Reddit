@@ -1,5 +1,7 @@
 package ru.neosvet.reddit.views
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -12,11 +14,20 @@ import ru.neosvet.reddit.list.PostsAdapter
 import ru.neosvet.reddit.viewmodel.HotState
 import ru.neosvet.reddit.viewmodel.HotViewModel
 
+
 class HotFragment : Fragment() {
     private val model: HotViewModel by lazy {
         ViewModelProvider(this).get(HotViewModel::class.java)
     }
     private var binding: FragmentHotBinding? = null
+    private val clickOnLink: (String) -> Unit = { link ->
+        try {
+            val myIntent = Intent(Intent.ACTION_VIEW)
+            myIntent.data = Uri.parse(link)
+            requireActivity().startActivity(myIntent)
+        } catch (e: Exception) {
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,7 +68,7 @@ class HotFragment : Fragment() {
     }
 
     private fun initList(posts: List<Post>) = binding?.run {
-        val adapter = PostsAdapter(posts)
+        val adapter = PostsAdapter(posts, clickOnLink)
         rvPosts.adapter = adapter
     }
 

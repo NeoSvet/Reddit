@@ -12,6 +12,9 @@ import ru.neosvet.reddit.scheduler.DefaultSchedulers
 import ru.neosvet.reddit.scheduler.Schedulers
 
 class HotViewModel : ViewModel() {
+    companion object {
+        private const val URL = "https://www.reddit.com"
+    }
     private val client: Reddit by lazy {
         RedditRetrofit.create()
     }
@@ -45,6 +48,7 @@ class HotViewModel : ViewModel() {
             list.add(
                 Post(
                     text = data.title,
+                    link = URL + data.permalink,
                     stars = data.score,
                     comments = data.num_comments
                 )

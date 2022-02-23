@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.neosvet.reddit.databinding.ItemPostBinding
 
 class PostsAdapter(
-    private val posts: List<Post>
+    private val posts: List<Post>,
+    private val onClick: (String) -> Unit
 ) : RecyclerView.Adapter<PostItem>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostItem =
         PostItem(
@@ -14,7 +15,8 @@ class PostsAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            onClick
         )
 
     override fun onBindViewHolder(holder: PostItem, position: Int) {
