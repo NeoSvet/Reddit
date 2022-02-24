@@ -7,6 +7,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.neosvet.reddit.R
 import ru.neosvet.reddit.databinding.FragmentHotBinding
@@ -26,7 +27,7 @@ class HotFragment : Fragment() {
         }
     }
     private lateinit var adapter: PostsAdapter
-    private val mDisposable = CompositeDisposable()
+    private var listUpdate: Disposable? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +38,7 @@ class HotFragment : Fragment() {
     }.root
 
     override fun onDestroyView() {
-        mDisposable.dispose()
+        listUpdate?.dispose()
         binding = null
         super.onDestroyView()
     }
@@ -71,11 +72,12 @@ class HotFragment : Fragment() {
     }
 
     private fun setupList() {
+        listUpdate?.dispose()
         adapter = PostsAdapter(clickOnLink)
         binding?.rvPosts?.adapter = adapter
-        mDisposable.add(model.paging().subscribe {
+        listUpdate = model.paging().subscribe {
             adapter.submitData(lifecycle, it)
-        })
+        }
     }
 
     private fun showError(throwable: Throwable) {
