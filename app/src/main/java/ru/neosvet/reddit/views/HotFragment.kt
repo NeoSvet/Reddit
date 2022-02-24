@@ -5,8 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.neosvet.reddit.R
 import ru.neosvet.reddit.databinding.FragmentHotBinding
 import ru.neosvet.reddit.list.Post
@@ -14,11 +14,8 @@ import ru.neosvet.reddit.list.PostsAdapter
 import ru.neosvet.reddit.viewmodel.HotState
 import ru.neosvet.reddit.viewmodel.HotViewModel
 
-
 class HotFragment : Fragment() {
-    private val model: HotViewModel by lazy {
-        ViewModelProvider(this).get(HotViewModel::class.java)
-    }
+    private val model: HotViewModel by viewModel()
     private var binding: FragmentHotBinding? = null
     private val clickOnLink: (String) -> Unit = { link ->
         try {

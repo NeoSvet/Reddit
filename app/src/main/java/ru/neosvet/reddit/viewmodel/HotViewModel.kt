@@ -11,16 +11,13 @@ import ru.neosvet.reddit.list.Post
 import ru.neosvet.reddit.scheduler.DefaultSchedulers
 import ru.neosvet.reddit.scheduler.Schedulers
 
-class HotViewModel : ViewModel() {
+class HotViewModel(
+    private val client: Reddit,
+    private val schedulers: Schedulers
+) : ViewModel() {
     companion object {
         private const val URL = "https://www.reddit.com"
     }
-    private val client: Reddit by lazy {
-        RedditRetrofit.create()
-    }
-    private val schedulers: Schedulers = DefaultSchedulers()
-
-
     private val _state: MutableLiveData<HotState> = MutableLiveData()
     val state: LiveData<HotState> = _state
     private var process: Disposable? = null
