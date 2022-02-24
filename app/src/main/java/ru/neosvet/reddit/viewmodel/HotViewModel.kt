@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.rxjava3.disposables.Disposable
+import ru.neosvet.reddit.BuildConfig
 import ru.neosvet.reddit.client.Reddit
 import ru.neosvet.reddit.client.RedditRetrofit
 import ru.neosvet.reddit.data.Listing
@@ -15,9 +16,6 @@ class HotViewModel(
     private val client: Reddit,
     private val schedulers: Schedulers
 ) : ViewModel() {
-    companion object {
-        private const val URL = "https://www.reddit.com"
-    }
     private val _state: MutableLiveData<HotState> = MutableLiveData()
     val state: LiveData<HotState> = _state
     private var process: Disposable? = null
@@ -45,7 +43,7 @@ class HotViewModel(
             list.add(
                 Post(
                     text = data.title,
-                    link = URL + data.permalink,
+                    link = BuildConfig.URL + data.permalink,
                     stars = data.score,
                     comments = data.num_comments
                 )

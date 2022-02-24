@@ -5,6 +5,6 @@ import retrofit2.http.GET
 import ru.neosvet.reddit.data.Listing
 
 interface Reddit {
-    @GET("r/aww/hot.json ")
+    @GET("/r/aww/hot.json ")
     fun getHot(): Single<Listing>
 }

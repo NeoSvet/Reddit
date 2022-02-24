@@ -6,13 +6,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.neosvet.reddit.BuildConfig
 
 object RedditRetrofit {
-    private const val URL = "https://www.reddit.com/"
-
     fun create(): Reddit =
         Retrofit.Builder()
-            .baseUrl(URL)
+            .baseUrl(BuildConfig.URL)
             .client(
                 OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().apply {
