@@ -18,10 +18,10 @@
         android:layout_marginBottom="@dimen/mini_indent"
         android:background="@drawable/bg_shape"
         android:orientation="vertical"
+        android:visibility="gone"
         android:paddingStart="@dimen/def_indent"
         android:paddingTop="@dimen/mini_indent"
         android:paddingEnd="@dimen/def_indent"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

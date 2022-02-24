@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.neosvet.reddit.R
 import ru.neosvet.reddit.databinding.FragmentHotBinding
-import ru.neosvet.reddit.list.Post
 import ru.neosvet.reddit.list.PostsAdapter
 import ru.neosvet.reddit.viewmodel.HotState
 import ru.neosvet.reddit.viewmodel.HotViewModel
@@ -25,6 +25,8 @@ class HotFragment : Fragment() {
         } catch (e: Exception) {
         }
     }
+    private lateinit var adapter: PostsAdapter
+    private val mDisposable = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,14 +37,15 @@ class HotFragment : Fragment() {
     }.root
 
     override fun onDestroyView() {
+        mDisposable.dispose()
         binding = null
         super.onDestroyView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.pLoad?.visibility = View.VISIBLE
-        model.openHotPosts()
+        setupList()
+        model.preparing()
         model.state.observe(requireActivity(), this::changeModelState)
     }
 
@@ -54,7 +57,6 @@ class HotFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        binding?.pLoad?.visibility = View.VISIBLE
         model.loadHotPosts()
         return super.onOptionsItemSelected(item)
     }
@@ -62,14 +64,18 @@ class HotFragment : Fragment() {
     private fun changeModelState(state: HotState) {
         binding?.pLoad?.visibility = View.GONE
         when (state) {
-            is HotState.Success -> initList(state.posts)
+            HotState.Success -> setupList()
+            HotState.Loading -> binding?.pLoad?.visibility = View.VISIBLE
             is HotState.Error -> showError(state.throwable)
         }
     }
 
-    private fun initList(posts: List<Post>) = binding?.run {
-        val adapter = PostsAdapter(posts, clickOnLink)
-        rvPosts.adapter = adapter
+    private fun setupList() {
+        adapter = PostsAdapter(clickOnLink)
+        binding?.rvPosts?.adapter = adapter
+        mDisposable.add(model.paging().subscribe {
+            adapter.submitData(lifecycle, it)
+        })
     }
 
     private fun showError(throwable: Throwable) {
