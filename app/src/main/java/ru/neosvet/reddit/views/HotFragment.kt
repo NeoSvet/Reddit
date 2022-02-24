@@ -41,6 +41,7 @@ class HotFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding?.pLoad?.visibility = View.VISIBLE
         model.openHotPosts()
         model.state.observe(requireActivity(), this::changeModelState)
     }
@@ -53,11 +54,13 @@ class HotFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        binding?.pLoad?.visibility = View.VISIBLE
         model.loadHotPosts()
         return super.onOptionsItemSelected(item)
     }
 
     private fun changeModelState(state: HotState) {
+        binding?.pLoad?.visibility = View.GONE
         when (state) {
             is HotState.Success -> initList(state.posts)
             is HotState.Error -> showError(state.throwable)
