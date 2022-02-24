@@ -41,7 +41,7 @@ class HotFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model.loadHotPosts()
+        model.openHotPosts()
         model.state.observe(requireActivity(), this::changeModelState)
     }
 
