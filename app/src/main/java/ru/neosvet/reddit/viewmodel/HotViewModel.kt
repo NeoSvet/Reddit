@@ -64,8 +64,7 @@ class HotViewModel(
     private fun fillInStorage(result: Listing) {
         factory.calcTotal(result.data.children.size)
         result.data.children.forEach {
-            val data = it.data
-            insertToStorage(data)
+            insertToStorage(it.data)
         }
     }
 
