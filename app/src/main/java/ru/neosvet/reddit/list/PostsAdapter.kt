@@ -8,7 +8,7 @@ import ru.neosvet.reddit.databinding.ItemPostBinding
 
 class PostsAdapter(
     private val onClick: (String) -> Unit
-) : PagingDataAdapter<Post, PostItem>(PassengersComparator) {
+) : PagingDataAdapter<Post, PostItem>(PostsComparator) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -27,7 +27,7 @@ class PostsAdapter(
         item?.let { holder.setData(it) }
     }
 
-    object PassengersComparator : DiffUtil.ItemCallback<Post>() {
+    object PostsComparator : DiffUtil.ItemCallback<Post>() {
         override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
             return oldItem.link == newItem.link
         }
